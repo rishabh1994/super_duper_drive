@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Map;
+
 @Controller
 @Slf4j
 @AllArgsConstructor
@@ -39,10 +41,13 @@ public class NoteController {
         log.warn("Note insertion status id : {}", noteInsertionStatusId);
         if (noteInsertionStatusId < 0) {
             log.error("Error while inserting note. Please retry!");
+            model.addAttribute("isOperationSuccess", false);
         } else {
             log.warn("Note inserted successfully : {}", newNote);
+            model.addAttribute("isOperationSuccess", true);
         }
         log.warn("--------POST HOME PAGE--------");
-        return "redirect:/result";
+
+        return "result";
     }
 }
