@@ -30,9 +30,19 @@ public class HomeController {
                               Authentication authentication,
                               Model model) {
         log.warn("--------GET HOME PAGE--------");
+        if(!authentication.isAuthenticated()){
+            log.warn("Unauthenticated user");
+            log.warn("--------GET HOME PAGE--------");
+            return "login";
+        }
         String name = authentication.getName();
         log.warn("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
+        if(user == null){
+            log.warn("Null user");
+            log.warn("--------GET HOME PAGE--------");
+            return "login";
+        }
         log.warn("User object found with above name : {}", user);
         List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
         model.addAttribute("noteList", noteList);
