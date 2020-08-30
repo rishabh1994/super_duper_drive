@@ -24,7 +24,7 @@ public class NoteController {
     private final UserMapper userMapper;
     private final NoteMapper noteMapper;
 
-    @PostMapping("/home/notes/create")
+    @PostMapping("/home/notes/createOrUpdate")
     public String postHomePage(@ModelAttribute("newNote") Note newNote,
                                Authentication authentication,
                                Model model) {
@@ -37,9 +37,18 @@ public class NoteController {
         log.warn("User object found with above name : {}", user);
         newNote.setUserId(user.getUserId());
         log.warn("Updated note with user id of the user who posted");
-        int noteInsertionStatusId = noteMapper.insertNote(newNote);
-        log.warn("Note insertion status id : {}", noteInsertionStatusId);
-        if (noteInsertionStatusId < 0) {
+
+        boolean isEditRequest = isEditRequest(newNote);
+        int noteInsertionStatus;
+
+        if (isEditRequest) {
+            noteInsertionStatus = noteMapper.updateNote(newNote);
+        } else {
+            noteInsertionStatus = noteMapper.insertNote(newNote);
+        }
+        log.warn("Note insertion status id : {}", noteInsertionStatus);
+
+        if (noteInsertionStatus < 0) {
             log.error("Error while inserting note. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
@@ -49,5 +58,9 @@ public class NoteController {
         log.warn("--------POST HOME PAGE--------");
 
         return "result";
+    }
+
+    boolean isEditRequest(Note note) {
+        return note.getNoteId() != null;
     }
 }
