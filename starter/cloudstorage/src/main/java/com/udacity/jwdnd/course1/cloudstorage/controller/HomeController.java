@@ -30,38 +30,12 @@ public class HomeController {
                               Authentication authentication,
                               Model model) {
         log.warn("--------GET HOME PAGE--------");
-
-        boolean isAuthenticated = authentication.isAuthenticated();
-        log.warn("isAuthenticated : {}", isAuthenticated);
-        if (isAuthenticated) {
-            String name = authentication.getName();
-            log.warn("Name received from authentication : {}", name);
-            User user = userMapper.getUser(name);
-            log.warn("User object found with above name : {}", user);
-            if (user == null) {
-                log.error("Invalid user! Redirecting to login");
-                log.warn("--------GET HOME PAGE--------");
-                return "login";
-            }
-
-            List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
-            model.addAttribute("noteList", noteList);
-            int notesPostedByUser = noteList == null ? 0 : noteList.size();
-            log.warn("Total notes of the user : {}", notesPostedByUser);
-            log.warn("Printing notes of user");
-            if (noteList != null) {
-                for (Note note : noteList) {
-                    log.warn("Note : {}", note);
-                }
-            }
-            log.warn("Completed printing notes of the user");
-
-        } else {
-            log.error("Authentication issue. Redirecting to login");
-            log.warn("--------GET HOME PAGE--------");
-            return "login";
-        }
-
+        String name = authentication.getName();
+        log.warn("Name received from authentication : {}", name);
+        User user = userMapper.getUser(name);
+        log.warn("User object found with above name : {}", user);
+        List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
+        model.addAttribute("noteList", noteList);
         log.warn("--------GET HOME PAGE--------");
         return "home";
     }
@@ -73,33 +47,18 @@ public class HomeController {
         log.warn("--------POST HOME PAGE--------");
 
         log.warn("Note object fetched from form : {}", newNote);
-        boolean isAuthenticated = authentication.isAuthenticated();
-        if (isAuthenticated) {
-            String name = authentication.getName();
-            log.warn("Name received from authentication : {}", name);
-            User user = userMapper.getUser(name);
-            log.warn("User object found with above name : {}", user);
-            if (user == null) {
-                log.error("Invalid user! Redirecting to login");
-                log.warn("--------POST HOME PAGE--------");
-                return "login";
-            } else {
-                int userId = user.getUserId();
-                newNote.setUserId(userId);
-                log.warn("Updated note with user id of the user who posted");
-                int noteInsertionStatusId = noteMapper.insertNote(newNote);
-                log.warn("Note insertion status id : {}", noteInsertionStatusId);
-                if (noteInsertionStatusId < 0) {
-                    log.error("Error while inserting note. Please retry!");
-                } else {
-                    log.warn("Note inserted successfully : {}", newNote);
-                }
-            }
-
+        String name = authentication.getName();
+        log.warn("Name received from authentication : {}", name);
+        User user = userMapper.getUser(name);
+        log.warn("User object found with above name : {}", user);
+        newNote.setUserId(user.getUserId());
+        log.warn("Updated note with user id of the user who posted");
+        int noteInsertionStatusId = noteMapper.insertNote(newNote);
+        log.warn("Note insertion status id : {}", noteInsertionStatusId);
+        if (noteInsertionStatusId < 0) {
+            log.error("Error while inserting note. Please retry!");
         } else {
-            log.error("Authentication issue. Redirecting to login");
-            log.warn("--------POST HOME PAGE--------");
-            return "login";
+            log.warn("Note inserted successfully : {}", newNote);
         }
         log.warn("--------POST HOME PAGE--------");
         return "home";
