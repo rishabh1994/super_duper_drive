@@ -42,10 +42,7 @@ public class LoginController {
         int i = userService.insertUser(user);
         System.out.println("THIS IS NEW  " + i);
 
-        Note newNote = new Note();
-        newNote.setUserId(1);
-        newNote.setNoteDescription("description");
-        newNote.setNoteTitle("title");
+        Note newNote = new Note(null, "title", "desc", 1);
         log.warn("Updated note with user id of the user who posted");
         noteMapper.insertNote(newNote);
 
