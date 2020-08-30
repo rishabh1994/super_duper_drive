@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class File {
-    private int fileId;
+    private Integer fileId;
     private String fileName;
     private String contentType;
     private String fileSize;
-    private int userId;
+    private Integer userId;
 
 }

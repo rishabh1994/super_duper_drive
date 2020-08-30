@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Credential {
-    private int credentialId;
+    private Integer credentialId;
     private String url;
     private String userName;
     private String key;
     private String password;
-    private int userId;
+    private Integer userId;
 }
