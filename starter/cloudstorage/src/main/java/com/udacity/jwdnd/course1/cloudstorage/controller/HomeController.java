@@ -45,6 +45,7 @@ public class HomeController {
             }
 
             List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
+            model.addAttribute("noteList", noteList);
             int notesPostedByUser = noteList == null ? 0 : noteList.size();
             log.warn("Total notes of the user : {}", notesPostedByUser);
             log.warn("Printing notes of user");
