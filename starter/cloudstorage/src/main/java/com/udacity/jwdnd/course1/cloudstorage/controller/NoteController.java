@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class NoteController {
         newNote.setUserId(user.getUserId());
         log.warn("Updated note with user id of the user who posted");
 
-        boolean isEditRequest = isEditRequest(newNote);
+        boolean isEditRequest = newNote.getNoteId() != null;
         int noteInsertionStatus;
 
         if (isEditRequest) {
@@ -56,10 +57,6 @@ public class NoteController {
         log.warn("--------POST HOME PAGE--------");
 
         return "result";
-    }
-
-    boolean isEditRequest(Note note) {
-        return note.getNoteId() != null;
     }
 
     @GetMapping("/home/notes/delete")
