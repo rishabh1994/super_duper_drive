@@ -1,7 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import lombok.AllArgsConstructor;
@@ -24,13 +26,15 @@ public class HomeController {
 
     private final UserMapper userMapper;
     private final NoteMapper noteMapper;
+    private final CredentialMapper credentialMapper;
 
     @GetMapping()
     public String getHomePage(@ModelAttribute("newNote") Note newNote,
+                              @ModelAttribute("newCredential") Credential newCredential,
                               Authentication authentication,
                               Model model) {
         log.warn("--------GET HOME PAGE--------");
-        if(!authentication.isAuthenticated()){
+        if (!authentication.isAuthenticated()) {
             log.warn("Unauthenticated user");
             log.warn("--------GET HOME PAGE--------");
             return "login";
@@ -38,7 +42,7 @@ public class HomeController {
         String name = authentication.getName();
         log.warn("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
-        if(user == null){
+        if (user == null) {
             log.warn("Null user");
             log.warn("--------GET HOME PAGE--------");
             return "login";
@@ -46,6 +50,8 @@ public class HomeController {
         log.warn("User object found with above name : {}", user);
         List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
         model.addAttribute("noteList", noteList);
+        List<Credential> credentialList = credentialMapper.getCredentialsForAUser(user.getUserId());
+        model.addAttribute("credentialList", credentialList);
         log.warn("--------GET HOME PAGE--------");
         return "home";
     }
