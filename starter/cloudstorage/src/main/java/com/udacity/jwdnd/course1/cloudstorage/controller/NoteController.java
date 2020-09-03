@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -62,5 +60,23 @@ public class NoteController {
 
     boolean isEditRequest(Note note) {
         return note.getNoteId() != null;
+    }
+
+    @GetMapping("/home/notes/delete")
+    public String deleteNote(@RequestParam("id") Integer noteId, Model model) {
+        log.warn("--------GET /home/notes/delete PAGE--------");
+        log.warn("Received note deletion request for id : {}", noteId);
+        int noteDeletionStatus = noteMapper.deleteNote(noteId);
+        log.warn("noteDeletionStatus : {}", noteDeletionStatus);
+        if (noteDeletionStatus < 0) {
+            log.error("Error while deleting note. Please retry!");
+            model.addAttribute("isOperationSuccess", false);
+        } else {
+            log.warn("Note deleted successfully!");
+            model.addAttribute("isOperationSuccess", true);
+        }
+        log.warn("--------GET /home/notes/delete PAGE--------");
+
+        return "result";
     }
 }
