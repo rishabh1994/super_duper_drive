@@ -38,6 +38,6 @@ public class HashService {
         random.nextBytes(salt);
         String encodedSalt = Base64.getEncoder().encodeToString(salt);
         log.debug("completed generating random string");
-        return Base64.getEncoder().encodeToString(salt);
+        return encodedSalt;
     }
 }

@@ -6,6 +6,7 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -27,12 +28,14 @@ public class HomeController {
     private final UserMapper userMapper;
     private final NoteMapper noteMapper;
     private final CredentialMapper credentialMapper;
+    private  final EncryptionService encryptionService;
 
     @GetMapping()
     public String getHomePage(@ModelAttribute("newNote") Note newNote,
                               @ModelAttribute("newCredential") Credential newCredential,
                               Authentication authentication,
                               Model model) {
+        model.addAttribute("encryptionService", encryptionService);
         log.warn("--------GET HOME PAGE--------");
         if (!authentication.isAuthenticated()) {
             log.warn("Unauthenticated user");

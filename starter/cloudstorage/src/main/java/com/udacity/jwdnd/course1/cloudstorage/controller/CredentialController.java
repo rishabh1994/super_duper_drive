@@ -5,6 +5,8 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
+import com.udacity.jwdnd.course1.cloudstorage.services.HashService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,8 @@ public class CredentialController {
 
     private UserMapper userMapper;
     private CredentialMapper credentialMapper;
+    private HashService hashService;
+    private EncryptionService encryptionService;
 
     @PostMapping("/home/credential/createOrUpdate")
     public String addOrUpdateCredential(@ModelAttribute("newCredential") Credential newCredential,
@@ -40,6 +44,10 @@ public class CredentialController {
         newCredential.setUserId(user.getUserId());
         log.warn("Updated credential with user id of the user who posted.");
 
+        String encodedKey = hashService.getRandomString();
+        newCredential.setKey(encodedKey);
+        String encryptedPassword = encryptionService.encryptValue(newCredential.getPassword(), encodedKey);
+        newCredential.setPassword(encryptedPassword);
         boolean isEditRequest = newCredential.getCredentialId() != null;
         int credentialInsertionStatus;
 
