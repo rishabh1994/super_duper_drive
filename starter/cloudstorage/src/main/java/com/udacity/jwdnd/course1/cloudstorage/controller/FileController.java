@@ -6,6 +6,9 @@ import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -82,5 +85,35 @@ public class FileController {
         log.warn("--------GET /home/files/delete PAGE--------");
 
         return "result";
+    }
+
+    @GetMapping("/home/files/download")
+    public ResponseEntity downloadFile(@RequestParam("fileName") String fileName,
+                                       Authentication authentication,
+                                       Model model) {
+
+        log.warn("--------GET /home/files/download PAGE--------");
+        log.warn("Received file download request for name : {}", fileName);
+
+        String name = authentication.getName();
+        log.warn("Name received from authentication : {}", name);
+        User user = userMapper.getUser(name);
+        log.warn("User object found with above name : {}", user);
+
+        List<File> fileList = fileMapper.getAllFileForAUser(user.getUserId());
+
+        File finalFile = null;
+
+        for (File file : fileList) {
+            if (file.getFileName().equals(fileName)) {
+                finalFile = file;
+                break;
+            }
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + finalFile.getFileName() + "\"")
+                .body(new String(finalFile.getFileData()));
+
     }
 }
