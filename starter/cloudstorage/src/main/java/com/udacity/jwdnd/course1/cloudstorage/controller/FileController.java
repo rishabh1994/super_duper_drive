@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,6 +63,24 @@ public class FileController {
             log.error("IOException while file processing", e);
             model.addAttribute("isOperationSuccess", false);
         }
+        return "result";
+    }
+
+    @GetMapping("/home/files/delete")
+    public String deleteNote(@RequestParam("id") Integer fileId, Model model) {
+        log.warn("--------GET /home/files/delete PAGE--------");
+        log.warn("Received file deletion request for id : {}", fileId);
+        int fileDeletionStatus = fileMapper.deleteFile(fileId);
+        log.warn("fileDeletionStatus : {}", fileDeletionStatus);
+        if (fileDeletionStatus < 0) {
+            log.error("Error while deleting note. Please retry!");
+            model.addAttribute("isOperationSuccess", false);
+        } else {
+            log.warn("Note deleted successfully!");
+            model.addAttribute("isOperationSuccess", true);
+        }
+        log.warn("--------GET /home/files/delete PAGE--------");
+
         return "result";
     }
 }
