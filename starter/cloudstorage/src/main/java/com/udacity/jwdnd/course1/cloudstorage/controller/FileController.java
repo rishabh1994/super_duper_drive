@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Controller
 @Slf4j
@@ -39,6 +40,16 @@ public class FileController {
             File file = new File(null, fileUpload.getOriginalFilename(),
                     fileUpload.getContentType(), String.valueOf(fileUpload.getSize()),
                     user.getUserId(), fileUpload.getBytes());
+
+            String currentFileName = fileUpload.getOriginalFilename();
+            List<File> allFileForAUser = fileMapper.getAllFileForAUser(user.getUserId());
+            for (File file1 : allFileForAUser) {
+                if (file1.getFileName().equals(currentFileName)) {
+                    model.addAttribute("isOperationSuccess", false);
+                    return "result";
+                }
+            }
+
             int fileInsertionStatus = fileMapper.insertFile(file);
             if (fileInsertionStatus < 0) {
                 log.error("Error while inserting file. Please retry!");
