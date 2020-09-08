@@ -50,6 +50,11 @@ class LoginTests {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.doLogin("c", "d");
         assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/home");
+        WebElement logoutButton = driver.findElement(By.id("logoutButton"));
+        logoutButton.click();
+        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
+        driver.get("http://localhost:" + this.port + "/home");
+        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
     }
 
     @Test
@@ -63,6 +68,12 @@ class LoginTests {
         assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login?error");
         WebElement invalidUserNameOrPassword = driver.findElement(By.id("invalidUserNameOrPassword"));
         assertTrue(invalidUserNameOrPassword.isDisplayed());
+    }
+
+    @Test
+    public void testUnauthorizedAccess() {
+        driver.get("http://localhost:" + this.port + "/home");
+        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
     }
 
 }
