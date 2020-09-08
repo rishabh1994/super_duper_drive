@@ -16,13 +16,13 @@
 
             <h1 class="display-5">Sign Up</h1>
             <form action="#" method="POST" th:object="${newUser}" th:action="@{'/signup'}">
-                <div th:if="${isSignupSuccess}" class="alert alert-dark">
+                <div id="signupSuccess" th:if="${isSignupSuccess}" class="alert alert-dark">
                     You successfully signed up! Please continue to the <a th:href="@{/login}">login</a> page.
                 </div>
-                <div th:if="${isSignupFailed}" class="alert alert-danger">
+                <div id="signupFailed" th:if="${isSignupFailed}" class="alert alert-danger">
                     <span>Sign up Failed! Please retry.</span>
                 </div>
-                <div th:if="${isUserNameDuplicate}" class="alert alert-danger">
+                <div id="duplicateUser" th:if="${isUserNameDuplicate}" class="alert alert-danger">
                     <span>Duplicate user name. Please try a new user name.</span>
                 </div>
                 <div class="form-row">
@@ -45,7 +45,7 @@
                         <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Enter Password" maxlength="20" th:field="*{password}" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <button id="signupButton" type="submit" class="btn btn-primary">Sign Up</button>
             </form>
         </div>
     </body>
