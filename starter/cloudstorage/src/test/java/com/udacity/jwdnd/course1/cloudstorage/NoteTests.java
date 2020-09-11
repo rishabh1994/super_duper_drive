@@ -98,8 +98,36 @@ class NoteTests {
         String userTable = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable"))).getText();
         assertFalse(userTable.contains(noteTitle));
         assertFalse(userTable.contains(noteDescription));
+    }
 
+    @Test
+    public void editNote() throws Exception{
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        SignupPage signupPage = new SignupPage(webDriverWait);
+        signupPage.doSignUp("a", "b", "c", "d");
+        webDriver.get("http://localhost:" + this.port + "/login");
+        LoginPage loginPage = new LoginPage(webDriverWait);
+        loginPage.doLogin("c", "d");
+        assertEquals(webDriver.getCurrentUrl(), "http://localhost:" + this.port + "/home");
 
+        NotePage notePage = new NotePage(webDriverWait);
+        String noteTitle = "SAMPLE NOTE";
+        String noteDescription = "SAMPLE DESC";
+        notePage.createNote(noteTitle, noteDescription);
+
+        webDriver.get("http://localhost:" + this.port + "/home");
+        Thread.sleep(2000);
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("editNoteButton"))).click();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("note-title"))).sendKeys(" UPDATED");
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("note-description"))).sendKeys(" UPDATED");
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("notesClick"))).click();
+        webDriver.get("http://localhost:" + this.port + "/home");
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
+        Thread.sleep(2000);
+        String userTable = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable"))).getText();
+        assertTrue(userTable.contains(noteTitle + " UPDATED"));
+        assertTrue(userTable.contains(noteDescription + " UPDATED"));
     }
 
 }
