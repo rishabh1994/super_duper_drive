@@ -1,41 +1,22 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import org.openqa.selenium.WebDriver;
+import lombok.AllArgsConstructor;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+@AllArgsConstructor
 public class SignupPage {
 
-    @FindBy(id = "inputFirstName")
-    private WebElement inputFirstName;
+    private final WebDriverWait webDriverWait;
 
-    @FindBy(id = "inputLastName")
-    private WebElement inputLastName;
+    public void doSignUp(String firstName, String lastName, String userName, String password) {
 
-    @FindBy(id = "inputUsername")
-    private WebElement inputUsername;
-
-    @FindBy(id = "inputPassword")
-    private WebElement inputPassword;
-
-    @FindBy(id = "signupSuccess")
-    private WebElement signupSuccess;
-
-    @FindBy(id = "duplicateUser")
-    private WebElement duplicateUser;
-
-    @FindBy(id = "signupButton")
-    private WebElement signupButton;
-
-    public SignupPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
-    }
-
-    public void doSignup(String firstName,
-                         String lastName,
-                         String userName,
-                         String password) {
+        WebElement inputFirstName = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputFirstName")));
+        WebElement inputLastName = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputLastName")));
+        WebElement inputUsername = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputUsername")));
+        WebElement inputPassword = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputPassword")));
+        WebElement signupButton = webDriverWait.until(webDriver -> webDriver.findElement(By.id("signupButton")));
 
         inputFirstName.clear();
         inputLastName.clear();
@@ -48,18 +29,6 @@ public class SignupPage {
         inputPassword.sendKeys(password);
 
         signupButton.click();
-    }
-
-    public String getSignupStatus() {
-        return signupSuccess.getText();
-    }
-
-    public String getDuplicateUserErrorMessage() {
-        return duplicateUser.getText();
-    }
-
-    public boolean isDuplicateUserErrorMessageDisplayed() {
-        return duplicateUser.isDisplayed();
     }
 
 }

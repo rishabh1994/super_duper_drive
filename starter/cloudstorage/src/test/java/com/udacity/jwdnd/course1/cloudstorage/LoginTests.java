@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -22,7 +23,8 @@ class LoginTests {
     @LocalServerPort
     private int port;
 
-    private WebDriver driver;
+    private WebDriver webDriver;
+    private WebDriverWait webDriverWait;
 
     @BeforeAll
     static void beforeAll() {
@@ -31,49 +33,47 @@ class LoginTests {
 
     @BeforeEach
     public void beforeEach() {
-        this.driver = new ChromeDriver();
+        this.webDriver = new ChromeDriver();
+        this.webDriverWait = new WebDriverWait(webDriver, 1000);
     }
 
     @AfterEach
     public void afterEach() {
-        if (this.driver != null) {
-            driver.quit();
+        if (this.webDriver != null) {
+            webDriver.quit();
         }
+        webDriver = null;
+        webDriverWait = null;
     }
 
     @Test
     public void doSuccessfulLoginAfterSignup() {
-        driver.get("http://localhost:" + this.port + "/signup");
-        SignupPage signupPage = new SignupPage(driver);
-        signupPage.doSignup("a", "b", "c", "d");
-        driver.get("http://localhost:" + this.port + "/login");
-        LoginPage loginPage = new LoginPage(driver);
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        SignupPage signupPage = new SignupPage(webDriverWait);
+        signupPage.doSignUp("a", "b", "c", "d");
+        webDriver.get("http://localhost:" + this.port + "/login");
+        LoginPage loginPage = new LoginPage(webDriverWait);
         loginPage.doLogin("c", "d");
-        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/home");
-        WebElement logoutButton = driver.findElement(By.id("logoutButton"));
-        logoutButton.click();
-        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
-        driver.get("http://localhost:" + this.port + "/home");
-        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
+        assertEquals(webDriver.getCurrentUrl(), "http://localhost:" + this.port + "/home");
     }
 
     @Test
     public void doUnsuccessfulLoginAfterSignup() {
-        driver.get("http://localhost:" + this.port + "/signup");
-        SignupPage signupPage = new SignupPage(driver);
-        signupPage.doSignup("a", "b", "c", "d");
-        driver.get("http://localhost:" + this.port + "/login");
-        LoginPage loginPage = new LoginPage(driver);
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        SignupPage signupPage = new SignupPage(webDriverWait);
+        signupPage.doSignUp("a", "b", "c", "d");
+        webDriver.get("http://localhost:" + this.port + "/login");
+        LoginPage loginPage = new LoginPage(webDriverWait);
         loginPage.doLogin("c", "d2");
-        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login?error");
-        WebElement invalidUserNameOrPassword = driver.findElement(By.id("invalidUserNameOrPassword"));
+        assertEquals(webDriver.getCurrentUrl(), "http://localhost:" + this.port + "/login?error");
+        WebElement invalidUserNameOrPassword = webDriverWait.until(webDriver -> webDriver.findElement(By.id("invalidUserNameOrPassword")));
         assertTrue(invalidUserNameOrPassword.isDisplayed());
     }
 
     @Test
     public void testUnauthorizedAccess() {
-        driver.get("http://localhost:" + this.port + "/home");
-        assertEquals(driver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
+        webDriver.get("http://localhost:" + this.port + "/home");
+        assertEquals(webDriver.getCurrentUrl(), "http://localhost:" + this.port + "/login");
     }
 
 }

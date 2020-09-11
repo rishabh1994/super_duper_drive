@@ -1,32 +1,28 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import org.openqa.selenium.WebDriver;
+import lombok.AllArgsConstructor;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+@AllArgsConstructor
 public class LoginPage {
 
-    @FindBy(id = "inputUsername")
-    private WebElement inputUsername;
-
-    @FindBy(id = "inputPassword")
-    private WebElement inputPassword;
-
-    @FindBy(id = "loginSubmitButton")
-    private WebElement loginSubmitButton;
-
-    public LoginPage(WebDriver driver) {
-        PageFactory.initElements(driver, this);
-    }
+    private WebDriverWait webDriverWait;
 
     public void doLogin(String userName,
-                         String password) {
+                        String password) {
+
+        WebElement inputUsername = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputUsername")));
+        WebElement inputPassword = webDriverWait.until(webDriver -> webDriver.findElement(By.id("inputPassword")));
+        WebElement loginSubmitButton = webDriverWait.until(webDriver -> webDriver.findElement(By.id("loginSubmitButton")));
 
         inputUsername.clear();
         inputPassword.clear();
+
         inputUsername.sendKeys(userName);
         inputPassword.sendKeys(password);
+
         loginSubmitButton.click();
     }
 

@@ -2,8 +2,11 @@ package com.udacity.jwdnd.course1.cloudstorage;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -19,7 +22,8 @@ class SignUpTests {
     @LocalServerPort
     private int port;
 
-    private WebDriver driver;
+    private WebDriverWait webDriverWait;
+    private WebDriver webDriver;
 
     @BeforeAll
     static void beforeAll() {
@@ -28,33 +32,46 @@ class SignUpTests {
 
     @BeforeEach
     public void beforeEach() {
-        this.driver = new ChromeDriver();
+        this.webDriver = new ChromeDriver();
+        this.webDriverWait = new WebDriverWait(webDriver, 1000);
     }
 
     @AfterEach
     public void afterEach() {
-        if (this.driver != null) {
-            driver.quit();
+        if (this.webDriver != null) {
+            webDriver.quit();
         }
+        webDriver = null;
+        webDriverWait = null;
     }
 
     @Test
     public void duplicateSignup() {
-        driver.get("http://localhost:" + this.port + "/signup");
-        SignupPage signupPage = new SignupPage(driver);
-        signupPage.doSignup("a", "b", "c", "d");
-        signupPage.doSignup("a", "b", "c", "d");
-        assertEquals(signupPage.getDuplicateUserErrorMessage(),
-                "Duplicate user name. Please try a new user name.");
-        assertTrue(signupPage.isDuplicateUserErrorMessageDisplayed());
+
+        SignupPage signupPage = new SignupPage(webDriverWait);
+
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        signupPage.doSignUp("a", "b", "c", "d");
+
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        signupPage.doSignUp("a", "b", "c", "d");
+
+        WebElement duplicateUser = webDriverWait.until(webDriver -> webDriver.findElement(By.id("duplicateUser")));
+
+        assertEquals(duplicateUser.getText(), "Duplicate user name. Please try a new user name.");
+        assertTrue(duplicateUser.isDisplayed());
     }
 
     @Test
     public void doSignup() {
-        driver.get("http://localhost:" + this.port + "/signup");
-        SignupPage signupPage = new SignupPage(driver);
-        signupPage.doSignup("a", "b", "c", "d");
-        assertEquals(signupPage.getSignupStatus(), "You successfully signed up! Please continue to the login page.");
+
+        SignupPage signupPage = new SignupPage(webDriverWait);
+
+        webDriver.get("http://localhost:" + this.port + "/signup");
+        signupPage.doSignUp("e", "f", "g", "h");
+
+        WebElement signupSuccess = webDriverWait.until(webDriver -> webDriver.findElement(By.id("signupSuccess")));
+        assertEquals(signupSuccess.getText(), "You successfully signed up! Please continue to the login page.");
     }
 
 }
