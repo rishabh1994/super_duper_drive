@@ -14,8 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -91,6 +90,15 @@ class NoteTests {
         webDriver.get("http://localhost:" + this.port + "/home");
         Thread.sleep(2000);
         webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("deleteNoteButton"))).click();
+        Thread.sleep(2000);
+        webDriver.get("http://localhost:" + this.port + "/home");
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(By.id("nav-notes-tab"))).click();
+        Thread.sleep(2000);
+        String userTable = webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("userTable"))).getText();
+        assertFalse(userTable.contains(noteTitle));
+        assertFalse(userTable.contains(noteDescription));
+
 
     }
 
