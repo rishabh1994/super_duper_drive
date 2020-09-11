@@ -27,15 +27,15 @@ public class NoteController {
     public String postHomePage(@ModelAttribute("newNote") Note newNote,
                                Authentication authentication,
                                Model model) {
-        log.warn("--------POST HOME PAGE--------");
+        log.debug("--------POST HOME PAGE--------");
 
-        log.warn("Note object fetched from form : {}", newNote);
+        log.debug("Note object fetched from form : {}", newNote);
         String name = authentication.getName();
-        log.warn("Name received from authentication : {}", name);
+        log.debug("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
-        log.warn("User object found with above name : {}", user);
+        log.debug("User object found with above name : {}", user);
         newNote.setUserId(user.getUserId());
-        log.warn("Updated note with user id of the user who posted");
+        log.debug("Updated note with user id of the user who posted");
 
         boolean isEditRequest = newNote.getNoteId() != null;
         int noteInsertionStatus;
@@ -45,34 +45,34 @@ public class NoteController {
         } else {
             noteInsertionStatus = noteMapper.insertNote(newNote);
         }
-        log.warn("Note insertion status id : {}", noteInsertionStatus);
+        log.debug("Note insertion status id : {}", noteInsertionStatus);
 
         if (noteInsertionStatus < 0) {
             log.error("Error while inserting note. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
-            log.warn("Note inserted successfully : {}", newNote);
+            log.debug("Note inserted successfully : {}", newNote);
             model.addAttribute("isOperationSuccess", true);
         }
-        log.warn("--------POST HOME PAGE--------");
+        log.debug("--------POST HOME PAGE--------");
 
         return "result";
     }
 
     @GetMapping("/home/notes/delete")
     public String deleteNote(@RequestParam("id") Integer noteId, Model model) {
-        log.warn("--------GET /home/notes/delete PAGE--------");
-        log.warn("Received note deletion request for id : {}", noteId);
+        log.debug("--------GET /home/notes/delete PAGE--------");
+        log.debug("Received note deletion request for id : {}", noteId);
         int noteDeletionStatus = noteMapper.deleteNote(noteId);
-        log.warn("noteDeletionStatus : {}", noteDeletionStatus);
+        log.debug("noteDeletionStatus : {}", noteDeletionStatus);
         if (noteDeletionStatus < 0) {
             log.error("Error while deleting note. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
-            log.warn("Note deleted successfully!");
+            log.debug("Note deleted successfully!");
             model.addAttribute("isOperationSuccess", true);
         }
-        log.warn("--------GET /home/notes/delete PAGE--------");
+        log.debug("--------GET /home/notes/delete PAGE--------");
 
         return "result";
     }

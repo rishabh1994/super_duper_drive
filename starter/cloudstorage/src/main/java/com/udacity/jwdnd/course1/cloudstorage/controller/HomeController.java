@@ -39,28 +39,28 @@ public class HomeController {
                               Authentication authentication,
                               Model model) {
         model.addAttribute("encryptionService", encryptionService);
-        log.warn("--------GET HOME PAGE--------");
+        log.debug("--------GET HOME PAGE--------");
         if (!authentication.isAuthenticated()) {
-            log.warn("Unauthenticated user");
-            log.warn("--------GET HOME PAGE--------");
+            log.debug("Unauthenticated user");
+            log.debug("--------GET HOME PAGE--------");
             return "login";
         }
         String name = authentication.getName();
-        log.warn("Name received from authentication : {}", name);
+        log.debug("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
         if (user == null) {
-            log.warn("Null user");
-            log.warn("--------GET HOME PAGE--------");
+            log.debug("Null user");
+            log.debug("--------GET HOME PAGE--------");
             return "login";
         }
-        log.warn("User object found with above name : {}", user);
+        log.debug("User object found with above name : {}", user);
         List<Note> noteList = noteMapper.getAllNotesForAUser(user.getUserId());
         model.addAttribute("noteList", noteList);
         List<File> fileList = fileMapper.getAllFileForAUser(user.getUserId());
         model.addAttribute("fileList", fileList);
         List<Credential> credentialList = credentialMapper.getCredentialsForAUser(user.getUserId());
         model.addAttribute("credentialList", credentialList);
-        log.warn("--------GET HOME PAGE--------");
+        log.debug("--------GET HOME PAGE--------");
         return "home";
     }
 

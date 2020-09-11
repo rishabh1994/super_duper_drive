@@ -22,11 +22,11 @@ public class UserService {
     private UserMapper userMapper;
 
     public boolean isUserNameAvailable(String userName) {
-        log.warn("Received Request to check user name uniqueness for:{}", userName);
+        log.debug("Received Request to check user name uniqueness for:{}", userName);
         User user = userMapper.getUser(userName);
-        log.warn("User Found from db with the above user Name : {}", user);
+        log.debug("User Found from db with the above user Name : {}", user);
         boolean isUserNameAvailable = user == null;
-        log.warn("isUserNameAvailable : {}", isUserNameAvailable);
+        log.debug("isUserNameAvailable : {}", isUserNameAvailable);
         return isUserNameAvailable;
     }
 
@@ -35,9 +35,9 @@ public class UserService {
         String hashedPassword = hashService.getHashedValue(user.getPassword(), encodedSalt);
         user.setPassword(hashedPassword);
         user.setSalt(encodedSalt);
-        log.warn("Added salt and hashes password to the user details");
+        log.debug("Added salt and hashes password to the user details");
         int userId = userMapper.insertUser(user);
-        log.warn("User Id Insert Return call : {}", userId);
+        log.debug("User Id Insert Return call : {}", userId);
         return userId;
     }
 }

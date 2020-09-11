@@ -16,36 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @AllArgsConstructor
 public class LoginController {
 
-    static int counter = 1;
-
-    private UserService userService;
-    private NoteMapper noteMapper;
-
     @GetMapping
     public String getLoginPage() {
-        log.warn("--------GET REQUEST LOGIN PAGE--------");
-        if (counter == 1) {
-            tempDataCreation();
-            counter++;
-        }
-        log.warn("--------GET REQUEST LOGIN PAGE--------");
         return "login";
-    }
-
-    //TODO DELETE IT LATER.
-    public void tempDataCreation() {
-        User user = new User();
-        user.setFirstName("a");
-        user.setLastName("a");
-        user.setPassword("a");
-        user.setUserName("a");
-        int i = userService.insertUser(user);
-        System.out.println("THIS IS NEW  " + i);
-
-        Note newNote = new Note(null, "title", "desc", 1);
-        log.warn("Updated note with user id of the user who posted");
-        noteMapper.insertNote(newNote);
-
-
     }
 }

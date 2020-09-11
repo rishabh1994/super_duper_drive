@@ -34,11 +34,11 @@ public class FileController {
                              Authentication authentication,
                              Model model) {
 
-        log.warn("Name of file object fetched from UI : {}", fileUpload.getOriginalFilename());
+        log.debug("Name of file object fetched from UI : {}", fileUpload.getOriginalFilename());
         String name = authentication.getName();
-        log.warn("Name received from authentication : {}", name);
+        log.debug("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
-        log.warn("User object found with above name : {}", user);
+        log.debug("User object found with above name : {}", user);
 
         try {
             File file = new File(null, fileUpload.getOriginalFilename(),
@@ -59,7 +59,7 @@ public class FileController {
                 log.error("Error while inserting file. Please retry!");
                 model.addAttribute("isOperationSuccess", false);
             } else {
-                log.warn("File inserted successfully : {}", file.getFileId());
+                log.debug("File inserted successfully : {}", file.getFileId());
                 model.addAttribute("isOperationSuccess", true);
             }
         } catch (IOException e) {
@@ -71,18 +71,18 @@ public class FileController {
 
     @GetMapping("/home/files/delete")
     public String deleteNote(@RequestParam("id") Integer fileId, Model model) {
-        log.warn("--------GET /home/files/delete PAGE--------");
-        log.warn("Received file deletion request for id : {}", fileId);
+        log.debug("--------GET /home/files/delete PAGE--------");
+        log.debug("Received file deletion request for id : {}", fileId);
         int fileDeletionStatus = fileMapper.deleteFile(fileId);
-        log.warn("fileDeletionStatus : {}", fileDeletionStatus);
+        log.debug("fileDeletionStatus : {}", fileDeletionStatus);
         if (fileDeletionStatus < 0) {
             log.error("Error while deleting note. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
-            log.warn("Note deleted successfully!");
+            log.debug("Note deleted successfully!");
             model.addAttribute("isOperationSuccess", true);
         }
-        log.warn("--------GET /home/files/delete PAGE--------");
+        log.debug("--------GET /home/files/delete PAGE--------");
 
         return "result";
     }
@@ -92,13 +92,13 @@ public class FileController {
                                        Authentication authentication,
                                        Model model) {
 
-        log.warn("--------GET /home/files/download PAGE--------");
-        log.warn("Received file download request for name : {}", fileName);
+        log.debug("--------GET /home/files/download PAGE--------");
+        log.debug("Received file download request for name : {}", fileName);
 
         String name = authentication.getName();
-        log.warn("Name received from authentication : {}", name);
+        log.debug("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
-        log.warn("User object found with above name : {}", user);
+        log.debug("User object found with above name : {}", user);
 
         List<File> fileList = fileMapper.getAllFileForAUser(user.getUserId());
 

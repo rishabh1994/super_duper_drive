@@ -35,14 +35,14 @@ public class CredentialController {
                                         Authentication authentication,
                                         Model model) {
 
-        log.warn("--------POST /home/credential/createOrUpdate PAGE--------");
-        log.warn("Credential object fetched from form : {}", newCredential);
+        log.debug("--------POST /home/credential/createOrUpdate PAGE--------");
+        log.debug("Credential object fetched from form : {}", newCredential);
         String name = authentication.getName();
-        log.warn("Name received from authentication : {}", name);
+        log.debug("Name received from authentication : {}", name);
         User user = userMapper.getUser(name);
-        log.warn("User object found with above name : {}", user);
+        log.debug("User object found with above name : {}", user);
         newCredential.setUserId(user.getUserId());
-        log.warn("Updated credential with user id of the user who posted.");
+        log.debug("Updated credential with user id of the user who posted.");
 
         String encodedKey = hashService.getRandomString();
         newCredential.setKey(encodedKey);
@@ -56,34 +56,34 @@ public class CredentialController {
         } else {
             credentialInsertionStatus = credentialMapper.insertCredential(newCredential);
         }
-        log.warn("Credential insertion status id : {}", credentialInsertionStatus);
+        log.debug("Credential insertion status id : {}", credentialInsertionStatus);
 
         if (credentialInsertionStatus < 0) {
             log.error("Error while inserting credential. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
-            log.warn("Credential inserted successfully : {}", newCredential);
+            log.debug("Credential inserted successfully : {}", newCredential);
             model.addAttribute("isOperationSuccess", true);
         }
-        log.warn("--------POST /home/credential/createOrUpdate PAGE--------");
+        log.debug("--------POST /home/credential/createOrUpdate PAGE--------");
 
         return "result";
     }
 
     @GetMapping("/home/credential/delete")
     public String deleteCredential(@RequestParam("id") Integer credentialId, Model model) {
-        log.warn("--------GET /home/credential/delete PAGE--------");
-        log.warn("Received credential deletion request for id : {}", credentialId);
+        log.debug("--------GET /home/credential/delete PAGE--------");
+        log.debug("Received credential deletion request for id : {}", credentialId);
         int credentialDeletionStatus = credentialMapper.deleteCredential(credentialId);
-        log.warn("credentialDeletionStatus : {}", credentialDeletionStatus);
+        log.debug("credentialDeletionStatus : {}", credentialDeletionStatus);
         if (credentialDeletionStatus < 0) {
             log.error("Error while deleting credential. Please retry!");
             model.addAttribute("isOperationSuccess", false);
         } else {
-            log.warn("credential deleted successfully!");
+            log.debug("credential deleted successfully!");
             model.addAttribute("isOperationSuccess", true);
         }
-        log.warn("--------GET /home/credential/delete PAGE--------");
+        log.debug("--------GET /home/credential/delete PAGE--------");
 
         return "result";
     }
